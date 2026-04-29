@@ -21,24 +21,28 @@ export default function AppPage() {
   const [ready, setReady] = useState(false)
 
   useEffect(() => {
-    setConfig(loadConfig())
-    setReplies(loadSavedReplies())
-    setSetupSaved(hasSetup())
-    setReady(true)
+    Promise.all([loadConfig(), loadSavedReplies(), hasSetup()]).then(
+      ([cfg, replies, setup]) => {
+        setConfig(cfg)
+        setReplies(replies)
+        setSetupSaved(setup)
+        setReady(true)
+      }
+    )
   }, [])
 
   const handleSaveConfig = async () => {
     if (!config) return
-    saveConfig(config)
+    await saveConfig(config)
     setSetupSaved(true)
   }
 
   const handleDeleteReply = async (id: string) => {
-    deleteReply(id)
-    setReplies(loadSavedReplies())
+    await deleteReply(id)
+    setReplies(await loadSavedReplies())
   }
 
-  const refreshReplies = () => setReplies(loadSavedReplies())
+  const refreshReplies = () => loadSavedReplies().then(setReplies)
 
   if (!ready || !config) {
     return (

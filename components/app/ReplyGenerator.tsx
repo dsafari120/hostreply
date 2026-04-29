@@ -62,7 +62,7 @@ export default function ReplyGenerator({ config, hasSetup, onSwitchToSetup }: Pr
   const save = async () => {
     setSaving(true)
     try {
-      saveReply({ guestMessage: guestMsg, reply, tag })
+      await saveReply({ guestMessage: guestMsg, reply, tag })
       setSaved(true)
       setTimeout(() => setSaved(false), 2000)
     } finally {
